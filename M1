@@ -1,0 +1,126 @@
+List<Map<String, dynamic>> library = [];
+
+void addBook({
+  required String title,
+  String author = "Unknown",
+  int year = 0,
+  String genre = "Unknown",
+}) {
+  Map<String, dynamic> book = {
+    'title': title,
+    'author': author,
+    'year': year,
+    'genre': genre,
+  };
+  
+  library.add(book);
+  print("Book added successfully.");
+}
+
+dynamic getBookInfo({required String title}) {
+  for (var book in library) {
+    if (book['title'] == title) {
+      return {
+        'author': book['author'],
+        'year': book['year'],
+        'genre': book['genre']
+      };
+    }
+  }
+  
+  return "Book not found.";
+}
+
+void listAllBooks({String? genre}) {
+  if (library.isEmpty) {
+    print("The library is empty.");
+    return;
+  }
+
+  if (genre != null) {
+    List<Map<String, dynamic>> filteredBooks = library
+        .where((book) => book['genre'] == genre)
+        .toList();
+    
+    if (filteredBooks.isEmpty) {
+      print("No books found for genre: $genre");
+    } else {
+      print("Books in genre '$genre':");
+      for (var book in filteredBooks) {
+        printBook(book);
+      }
+    }
+  } else {
+    print("All books in the library:");
+    for (var book in library) {
+      printBook(book);
+    }
+  }
+}
+
+void printBook(Map<String, dynamic> book) {
+  print("'${book['title']}' by ${book['author']} (${book['year']}) - Genre: ${book['genre']}");
+}
+
+dynamic listBooksByGenre({required String genre}) {
+  List<Map<String, dynamic>> genreBooks = library
+      .where((book) => book['genre'] == genre)
+      .toList();
+  
+  if (genreBooks.isEmpty) {
+    return "No books found for this genre.";
+  }
+  
+  return genreBooks;
+}
+
+String removeBook({required String title}) {
+  int initialLength = library.length;
+  
+  library.removeWhere((book) => book['title'] == title);
+  
+  if (library.length < initialLength) {
+    return "Book removed successfully.";
+  } else {
+    return "Book not found.";
+  }
+}
+
+void main() {
+   addBook(title: "Out of Place", author: "Edward Said", year: 1999, genre: "Memoir");
+  addBook(title: "Palestine's Children", author: "Ghassan Kanafani", year: 1978, genre: "Short Stories");
+  addBook(title: "Salt Houses", author: "Hala Alyan", year: 2017, genre: "Fiction");
+  addBook(title: "The Woman from Tantoura", author: "Radwa Ashour", year: 2014, genre: "Historical Fiction");
+  addBook(title: "Palestine: A Personal History", author: "Karl Sabbagh", year: 2006, genre: "History");
+  addBook(title: "Gaza Writes Back", author: "Refaat Alareer", year: 2014, genre: "Short Stories");
+  addBook(title: "The Drone Eats with Me", author: "Atef Abu Saif", year: 2015, genre: "Diary");
+  
+  print("\nListing all books");
+  listAllBooks();
+  
+  print("\nRemoving a book");
+  String result = removeBook(title: "Salt Houses");
+  print(result);
+  
+  print("\nListing all books after removal");
+  listAllBooks();
+  
+  print("\nGetting book info");
+  var bookInfo = getBookInfo(title: "Gaza Writes Back");
+  print("Info for 'Men in the Sun': $bookInfo");
+  
+
+
+  print("\nListing books by genre");
+  listAllBooks(genre: "Memoir");
+  
+  print("\nGetting books by genre");
+  var fictionBooks = listBooksByGenre(genre: "Fiction");
+  print("Fiction books: $fictionBooks");
+  
+  print("\nTesting book not found");
+  var nonExistentBook = getBookInfo(title: "The Drone Eats with Me");
+  print(nonExistentBook);
+  
+  
+}
